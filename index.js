@@ -331,16 +331,22 @@ function makeStore() {
 //     }
 // }
 
+
+export var Route = makeRoute()
+export var Store = makeStore()
+export var State = makeState()
+
+
 function ensureWebConsole() {
     console.assert(
         new Error().stack.indexOf('<anonymous>') != -1,
         'State and Route globals can only be used from web console.' +
-            'You probably forgot to import { State, Route } from "./proto" '
+            'You probably forgot to import { State, Route } from "sr1" '
     )
 }
 
 function exposeGlobal(name, getter) {
-    Object.defineProperty(global, name, {
+    if(Object.defineProperty) Object.defineProperty(global, name, {
         get: function() {
             ensureWebConsole()
             return getter()
@@ -353,9 +359,4 @@ if (Object.defineProperty) {
     exposeGlobal('Store', () => Store)
     exposeGlobal('State', () => State)
     exposeGlobal('Route', () => Route)
-    exposeGlobal('_', () => _)
 }
-
-export var Route = makeRoute()
-export var Store = makeStore()
-export var State = makeState()

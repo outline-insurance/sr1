@@ -1,6 +1,6 @@
 {
   "name": "sr1",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "State Route 1: Simple routing & state management for React",
   "main": "dist/sr1.js",
   "license": "MIT",
