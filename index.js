@@ -16,8 +16,8 @@ export var APP_CONTEXT = 'default'
 // TODO: think more about the edge cases of the application's state
 // what is it before the container is mounted?
 
-var SR1Singleton
 var listeners = []
+var lastURLUpdate;
 
 // This is the main export for this library. We expect to
 // mount a SR1Singleton since we basically use global variables.
@@ -31,30 +31,53 @@ export function useSR1(RootComponent) {
 }
 
 export class SR1 extends React.Component {
-    constructor() {
-        super()
-        if (SR1Singleton) console.warn('Replacing old SR1Singleton...')
-        SR1Singleton = this
-        this.lastURLUpdate = 0
-    }
-
     componentDidMount() {
-        this.storageListener = window.addEventListener('storage', e => {
-            if (e.key === APP_CONTEXT) update()
-        })
-        this.popstateListener = window.addEventListener('popstate', e => {
-            update()
-        })
+        this._update = e => this.setState({ })
+        onUpdate(this._update)
     }
     componentWillUnmount() {
-        window.removeEventListener('storage', this.storageListener)
-        window.removeEventListener('popstate', this.popstateListener)
+        removeUpdateListener(this._update)
     }
     render() {
-        if (SR1Singleton !== this) throw new Error('Can not render unmounted SR1Singleton')
-
         return React.cloneElement(this.props.children)
     }
+}
+
+// trigger updates when Store is updated across pages
+var storageListener = window.addEventListener('storage', e => {
+    if (e.key === APP_CONTEXT) update()
+})
+
+var popstateListener = window.addEventListener('popstate', e => {
+    update()
+})
+
+if(typeof module !== 'undefined' && module.hot) {
+    module.hot.dispose(function () {
+        window.removeEventListener('storage', storageListener)
+        window.removeEventListener('popstate', popstateListener)
+    });
+}
+
+
+export function update() {
+    coreUpdate()
+
+    for (let cb of listeners) {
+        try {
+            cb()
+        } catch (err) {
+            console.error(err)
+        }
+    }
+}
+
+export function onUpdate(fn) {
+    listeners.push(fn)
+}
+
+function removeUpdateListener(fn){
+    listeners = listeners.filter(k => k !== fn)
 }
 
 export function match(path, options = {}) {
@@ -77,25 +100,6 @@ function coreUpdate() {
     Store = makeStore()
 }
 
-export function update() {
-    coreUpdate()
-
-    if (SR1Singleton) {
-        SR1Singleton.setState({})
-    }
-
-    for (let cb of listeners) {
-        try {
-            cb()
-        } catch (err) {
-            console.error(err)
-        }
-    }
-}
-
-export function onStateChange(fn) {
-    listeners.push(fn)
-}
 
 // This is basically the same Link component that is used
 // in Next.JS and React Router.
@@ -219,14 +223,14 @@ RouteConstructor.prototype = {
         // only ever do push state if the url changes
         // and if we have had at least HISTORY_TIMEOUT since the last update
         if (
-            Date.now() - SR1Singleton.lastURLUpdate > HISTORY_TIMEOUT &&
+            Date.now() - lastURLUpdate > HISTORY_TIMEOUT &&
             url !== location.pathname + location.search + location.hash
         ) {
             history.pushState(newState, desc, url)
         } else {
             history.replaceState(newState, desc, url)
         }
-        SR1Singleton.lastURLUpdate = Date.now()
+        lastURLUpdate = Date.now()
         update()
     },
     go(href = '/', obj = {}) {
