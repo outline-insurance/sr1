@@ -336,7 +336,6 @@ export var Route = makeRoute()
 export var Store = makeStore()
 export var State = makeState()
 
-
 function ensureWebConsole() {
     console.assert(
         new Error().stack.indexOf('<anonymous>') != -1,

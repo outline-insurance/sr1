@@ -1,5 +1,8 @@
 # State Route 1
 
+[![npm version](https://badge.fury.io/js/sr1.svg)](https://badge.fury.io/js/sr1)
+
+
 A scenic, All-American framework for state management and routing in React
 
 ![State Route 1](https://upload.wikimedia.org/wikipedia/commons/5/57/Pacific_Coast_Highway_Laguna_Beach.jpg)
