@@ -337,11 +337,11 @@ export var Store = makeStore()
 export var State = makeState()
 
 function ensureWebConsole() {
-    console.assert(
-        new Error().stack.indexOf('<anonymous>') != -1,
-        'State and Route globals can only be used from web console.' +
-            'You probably forgot to import { State, Route } from "sr1" '
-    )
+    if(new Error().stack.indexOf('<anonymous>:') == -1){
+        throw new Error(
+            'State and Route globals can only be used from web console.' +
+            'You probably forgot to import { State, Route } from "sr1" ')
+    }
 }
 
 function exposeGlobal(name, getter) {
