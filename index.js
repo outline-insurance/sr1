@@ -10,8 +10,8 @@ import { resolve as resolveURL, parse as parseURL } from 'url'
 // we replaceState (i.e. we consider this current state as a continuation
 // of the previous state). Otherwise we pushState.
 
-export var HISTORY_TIMEOUT = 2000
-export var APP_CONTEXT = 'default'
+var HISTORY_TIMEOUT = 2000
+var APP_CONTEXT = 'default'
 
 // TODO: think more about the edge cases of the application's state
 // what is it before the container is mounted?
@@ -59,7 +59,6 @@ if(typeof module !== 'undefined' && module.hot) {
     });
 }
 
-
 export function update() {
     coreUpdate()
 
@@ -76,11 +75,11 @@ export function onUpdate(fn) {
     listeners.push(fn)
 }
 
-function removeUpdateListener(fn){
+export function removeUpdateListener(fn){
     listeners = listeners.filter(k => k !== fn)
 }
 
-export function match(path, options = {}) {
+function match(path, options = {}) {
     const pathname = Route.path
     const { exact = true, strict = false, sensitive = false } = options
     const keys = []
@@ -99,7 +98,6 @@ function coreUpdate() {
     State = makeState()
     Store = makeStore()
 }
-
 
 // This is basically the same Link component that is used
 // in Next.JS and React Router.
