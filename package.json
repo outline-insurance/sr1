@@ -1,0 +1,24 @@
+{
+  "name": "sr1",
+  "version": "0.1.2",
+  "description": "State Route 1: Simple routing & state management for React",
+  "main": "dist/sr1.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "babel --presets react,es2015,stage-2 -o dist/sr1.js index.js"
+  },
+  "dependencies": {
+    "deep-freeze": "^0.0.1",
+    "lodash": "^4.17.10",
+    "path-to-regexp": "^2.2.1",
+    "query-string": "^6.1.0",
+    "react": "^16.4.1",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1"
+  }
+}
