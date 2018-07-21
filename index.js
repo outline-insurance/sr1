@@ -17,7 +17,7 @@ var APP_CONTEXT = 'default'
 // what is it before the container is mounted?
 
 var listeners = []
-var lastURLUpdate;
+var lastURLUpdate = 0;
 
 // This is the main export for this library. We expect to
 // mount a SR1Singleton since we basically use global variables.
