@@ -236,6 +236,9 @@ RouteConstructor.prototype = {
         // and defer execution
 
         let view = viewFromURL(href)
+
+        // Route.go should always pushState instead of replaceState
+        lastURLUpdate = 0;
         if (view.path === location.pathname) {
             this.update({ ...view, ...obj })
         } else {
